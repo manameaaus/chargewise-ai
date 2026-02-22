@@ -49,8 +49,6 @@ for msg in random.sample(messages, 6):
 
 time.sleep(0.5)
 
-print("\nsystem ready.")
-
 # ---------------- Dependency Check ----------------
 print("\nchecking environment...\n")
 
