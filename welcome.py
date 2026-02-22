@@ -50,5 +50,83 @@ for msg in random.sample(messages, 6):
 time.sleep(0.5)
 
 print("\nsystem ready.")
-print("welcome to chargewise ai.")
-print("may your bugs be shallow and your coffee strong.\n")
+
+# ---------------- Dependency Check ----------------
+print("\nchecking environment...\n")
+
+requirements = {
+    "pandas": "2.0",
+    "numpy": "1.24",
+    "sklearn": "1.2",
+    "matplotlib": "3.7",
+    "streamlit": "1.30",
+}
+
+results = []
+
+def version_ok(installed, required):
+    return tuple(map(int, installed.split(".")[:2])) >= tuple(map(int, required.split(".")))
+
+# pandas
+try:
+    import pandas as pd
+    ok = version_ok(pd.__version__, requirements["pandas"])
+    pd.DataFrame({"a": [1, 2]}).sum()
+    results.append(("pandas", pd.__version__, ok))
+except Exception:
+    results.append(("pandas", "missing", False))
+
+# numpy
+try:
+    import numpy as np
+    ok = version_ok(np.__version__, requirements["numpy"])
+    np.array([1, 2, 3]).mean()
+    results.append(("numpy", np.__version__, ok))
+except Exception:
+    results.append(("numpy", "missing", False))
+
+# scikit-learn
+try:
+    from sklearn.linear_model import LinearRegression
+    import sklearn
+    ok = version_ok(sklearn.__version__, requirements["sklearn"])
+    LinearRegression().fit([[0], [1]], [0, 1])
+    results.append(("scikit-learn", sklearn.__version__, ok))
+except Exception:
+    results.append(("scikit-learn", "missing", False))
+
+# matplotlib
+try:
+    import matplotlib
+    ok = version_ok(matplotlib.__version__, requirements["matplotlib"])
+    results.append(("matplotlib", matplotlib.__version__, ok))
+except Exception:
+    results.append(("matplotlib", "missing", False))
+
+# streamlit
+try:
+    import streamlit as st
+    ok = version_ok(st.__version__, requirements["streamlit"])
+    results.append(("streamlit", st.__version__, ok))
+except Exception:
+    results.append(("streamlit", "missing", False))
+
+# ---------------- report ----------------
+all_ok = True
+
+for name, version, ok in results:
+    status = "OK" if ok else "FAIL"
+    print(f"{name:<14} : {version:<10} {status}")
+    if not ok:
+        all_ok = False
+
+time.sleep(0.5)
+
+# ---------------- final message ----------------
+if all_ok:
+    print("\nsystem ready.")
+    print("welcome to chargewise ai.")
+    print("environment check passed.")
+else:
+    print("\nwarning: some dependencies are missing or outdated.")
+    print("run: pip install -r requirements.txt\n")
